@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<skin>
+
+    <!-- Extension information -->
+    <id>my.extension</id>
+    <extends>weblaf.dark.skin</extends>
+
+    <!-- Decorated frame -->
+    <style type="rootpane" id="dark" extends="frame-decorated">
+        <painter>
+            <decorations>
+                <decoration>
+                    <WebShape round="15,0,15,0" />
+                    <WebShadow type="outer" opacity="0.3" width="40" />
+                    <LineBorder color="20,20,20" />
+                    <ColorBackground color="68,68,68" />
+                </decoration>
+            </decorations>
+        </painter>
+
+        <!-- Frame buttons panel -->
+        <style type="panel" id="buttons">
+
+            <!-- Control buttons -->
+            <style type="button" id="control">
+                <painter>
+                    <decorations>
+                        <decoration>
+                            <GradientBackground>
+                                <color>50,70,130</color>
+                                <color>50,70,90</color>
+                            </GradientBackground>
+                        </decoration>
+                    </decorations>
+                </painter>
+            </style>
+            <style type="button" id="close">
+                <painter>
+                    <decorations>
+                        <decoration>
+                            <GradientBackground>
+                                <color>140,50,50</color>
+                                <color>110,50,50</color>
+                            </GradientBackground>
+                        </decoration>
+                    </decorations>
+                </painter>
+            </style>
+
+        </style>
+
+        <!-- Content panel -->
+        <style type="panel" id="content" extends="transparent" />
+
+    </style>
+
+</skin>
