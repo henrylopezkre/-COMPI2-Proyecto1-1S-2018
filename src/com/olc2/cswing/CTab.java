@@ -9,6 +9,8 @@ import com.alee.extended.painter.BorderPainter;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebButtonUI;
 import com.alee.laf.label.WebLabel;
+import com.alee.laf.menu.WebMenu;
+import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.alee.laf.text.WebTextField;
@@ -46,11 +48,11 @@ public class CTab extends WebPanel {
         this.setName(String.valueOf(tabID));
         this.tabID = tabID;
         this.parent = (WebTabbedPane)parent;
-        this.iconBlankPage = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_blank_page_20px.png"));
-        this.iconNew = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_close_14px.png"));
-        this.iconClose = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_close_14px.png"));
-        this.iconCloseHover = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_close_hover_20px.png"));
-        this.iconClosePressed = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_close_pressed_20px.png"));
+        this.iconBlankPage = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_blank_page_20px.png"));
+        this.iconNew = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_14px.png"));
+        this.iconClose = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_14px.png"));
+        this.iconCloseHover = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_hover_20px.png"));
+        this.iconClosePressed = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_pressed_20px.png"));
         this.setPreferredSize(new Dimension(150, 20));
         this.setBackground(parent.getParent().getBackground());
         this.setToolTip(title);
@@ -67,7 +69,7 @@ public class CTab extends WebPanel {
             this.setToolTip(title.isEmpty() ? "Nueva pestaña" : title);
             this.setMargin(0, 0, 0, 0);
             this.setHorizontalTextPosition(WebLabel.RIGHT);
-            this.setForeground(Color.gray);
+            //this.setForeground(Color.BLACK);
             this.setIcon(iconBlankPage);
             this.addMouseListener(tabMouseListener);  
         }
@@ -90,13 +92,11 @@ public class CTab extends WebPanel {
             this.setPreferredSize(new Dimension(20, 20));
             this.setUI(new BasicButtonUI());
             this.setContentAreaFilled(false);
-            this.setFocusable(false);
+            this.setFocusable(true);
             this.setBorder(BorderFactory.createEtchedBorder());
             this.setBorderPainted(false);
             this.addMouseListener(closeButtonMouseListener);
             this.setRolloverEnabled(true);
-            this.setBackground(Color.blue);
-            this.setOpaque(true);
         }
         private MouseListener closeButtonMouseListener = new MouseAdapter() {       
             @Override

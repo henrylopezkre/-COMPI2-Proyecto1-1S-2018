@@ -5,13 +5,30 @@
  */
 package com.olc2.gui;
 
+import com.alee.extended.painter.TexturePainter;
 import com.alee.extended.window.ComponentMoveAdapter;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.button.WebButton;
+import com.alee.laf.menu.WebMenu;
+import com.alee.laf.menu.WebMenuBar;
+import com.alee.laf.menu.WebMenuItem;
+import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.rootpane.WebRootPane;
+import com.alee.laf.scroll.WebScrollPane;
+import com.alee.laf.tabbedpane.TabStretchType;
+import com.alee.laf.tabbedpane.TabbedPaneStyle;
+import com.alee.laf.tabbedpane.WebTabbedPane;
+import com.olc2.cswing.CTab;
+import com.olc2.cswing.CTabbedPaneUI;
+import com.olc2.model.TabList;
+import java.awt.Color;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JRootPane;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -24,8 +41,39 @@ public class MainFrame extends WebFrame {
      */
     public MainFrame() {
         initComponents();
+        //Personalización
+        ComponentMoveAdapter.install(tabPaneNavegador, MainFrame.this);
+        this.setIconImages(WebLookAndFeel.getImages());
+        this.setInactiveShadeWidth(5);
+        this.setShadeWidth(0);
         this.setShowTitleComponent(false);
-        ComponentMoveAdapter.install(getRootPane(), MainFrame.this);
+        this.setWindowOpacity(0.95f);
+        //
+        
+        tabPaneNavegador.setUI(new CTabbedPaneUI());
+        JTextArea txtEditor = new JTextArea();
+        txtEditor.setEditable(false);
+        txtEditor.setColumns(20);
+        txtEditor.setRows(5);
+        txtEditor.setFocusable(false);
+        WebScrollPane scrollEditor = new WebScrollPane(txtEditor);
+        tabPaneNavegador.addTab("", scrollEditor);
+        tabPaneNavegador.addTab("", new WebPanel());
+        int i = TabList.getInstancia().getTabID();
+        tabPaneNavegador.setTabComponentAt(0, new CTab(tabPaneNavegador, i, "Facebook"));
+        TexturePainter tp4 = new TexturePainter (new ImageIcon(getClass().getResource("/com/olc2/resources/back.png")));
+        TabList.getInstancia().add(new CTab(tabPaneNavegador, i, "Facebook"));
+        i = TabList.getInstancia().getTabID();
+        tabPaneNavegador.setTabComponentAt(1, new CTab(tabPaneNavegador, i, ""));
+        //((WebTabbedPane)tabPaneNavegador).setBackgroundPainterAt(tabPaneNavegador.getTabCount () - 1, tp4);
+        ((WebTabbedPane)tabPaneNavegador).setPaintBorderOnlyOnSelectedTab(true);
+        ((WebTabbedPane)tabPaneNavegador).setTabOverlay(1);
+        ((WebTabbedPane)tabPaneNavegador).setTabInsets(new Insets(3, 10, 3, 10));
+        ((WebTabbedPane)tabPaneNavegador).setTabRunIndent(10);
+        ((WebTabbedPane)tabPaneNavegador).setTabStretchType(TabStretchType.never);
+        //((WebTabbedPane)tabPaneNavegador).setTabbedPaneStyle(TabbedPaneStyle.standalone);
+        TabList.getInstancia().add(new CTab(tabPaneNavegador, i, ""));
+        ((WebTabbedPane)tabPaneNavegador).setTabbedPaneStyle(TabbedPaneStyle.standalone);
     }
 
     /**
@@ -37,32 +85,19 @@ public class MainFrame extends WebFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelFrame = new javax.swing.JPanel();
+        tabPaneNavegador = new WebTabbedPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        panelFrame.setBackground(new java.awt.Color(0, 102, 204));
-
-        javax.swing.GroupLayout panelFrameLayout = new javax.swing.GroupLayout(panelFrame);
-        panelFrame.setLayout(panelFrameLayout);
-        panelFrameLayout.setHorizontalGroup(
-            panelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 641, Short.MAX_VALUE)
-        );
-        panelFrameLayout.setVerticalGroup(
-            panelFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 411, Short.MAX_VALUE)
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(tabPaneNavegador, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelFrame, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(tabPaneNavegador, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
         );
 
         pack();
@@ -108,6 +143,6 @@ public class MainFrame extends WebFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel panelFrame;
+    private javax.swing.JTabbedPane tabPaneNavegador;
     // End of variables declaration//GEN-END:variables
 }

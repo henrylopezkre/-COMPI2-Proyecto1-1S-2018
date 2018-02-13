@@ -50,16 +50,15 @@ public class CTabbedPaneUI extends WebTabbedPaneUI{
    boolean pressed = false, hover = false;
    Rectangle rectNew;
    Graphics2D g2d;
-   ImageIcon iconNew = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_new_14px.png"));
-   ImageIcon iconNewHover = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_new_hover_14px.png"));
-   ImageIcon iconNewPressed = new ImageIcon(getClass().getResource("/com/prueba/resources/ic_new_pressed_14px.png"));
+   ImageIcon iconNew = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_new_14px.png"));
+   ImageIcon iconNewHover = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_new_hover_14px.png"));
+   ImageIcon iconNewPressed = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_new_pressed_14px.png"));
    
    @Override
    protected void installListeners() {
       super.installListeners();
       tabPane.addMouseListener(newButtonMouseListener);
       tabPane.addMouseMotionListener(newButtonMouseMotionListener);
-      
    }
     @Override
     protected void paintTab(Graphics g, int tabPlacement,
