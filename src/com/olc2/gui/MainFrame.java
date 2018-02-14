@@ -15,6 +15,7 @@ import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.tabbedpane.TabStretchType;
 import com.alee.laf.tabbedpane.TabbedPaneStyle;
 import com.alee.laf.tabbedpane.WebTabbedPane;
+import com.olc2.cswing.CBrowserPane;
 import com.olc2.cswing.CTab;
 import com.olc2.cswing.CTabbedPaneUI;
 import com.olc2.model.TabList;
@@ -52,7 +53,7 @@ public class MainFrame extends WebFrame {
         txtEditor.setFocusable(false);
         WebScrollPane scrollEditor = new WebScrollPane(txtEditor);
         tabPaneNavegador.addTab("", scrollEditor);
-        tabPaneNavegador.addTab("", new WebPanel());
+        tabPaneNavegador.addTab("", new CBrowserPane());
         int i = TabList.getInstancia().getTabID();
         tabPaneNavegador.setTabComponentAt(0, new CTab(tabPaneNavegador, i, "Facebook"));
         TabList.getInstancia().add(new CTab(tabPaneNavegador, i, "Facebook"));
