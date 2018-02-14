@@ -6,6 +6,7 @@
 package com.olc2.cswing;
 
 import com.alee.extended.painter.BorderPainter;
+import com.alee.extended.painter.TexturePainter;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebButtonUI;
 import com.alee.laf.label.WebLabel;
@@ -16,7 +17,6 @@ import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.alee.laf.text.WebTextField;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -33,6 +33,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicButtonUI;
 import com.olc2.model.TabList;
+import java.awt.Color;
 
 /**
  *
@@ -40,36 +41,38 @@ import com.olc2.model.TabList;
  */
 public class CTab extends WebPanel {
     private int tabID;
-    private JTabText text;
+    private CTabText text;
     private WebTabbedPane parent;
-    private ImageIcon iconClose, iconCloseHover, iconClosePressed, iconBlankPage, iconNew;
+    private ImageIcon iconClose, iconCloseHover, iconClosePressed, iconBlankPage;
     public CTab(Component parent, int tabID, String title){
         super();
         this.setName(String.valueOf(tabID));
         this.tabID = tabID;
         this.parent = (WebTabbedPane)parent;
         this.iconBlankPage = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_blank_page_20px.png"));
-        this.iconNew = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_14px.png"));
         this.iconClose = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_14px.png"));
-        this.iconCloseHover = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_hover_20px.png"));
+        this.iconCloseHover = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_hover_18px.png"));
         this.iconClosePressed = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_pressed_20px.png"));
         this.setPreferredSize(new Dimension(150, 20));
         this.setBackground(parent.getParent().getBackground());
         this.setToolTip(title);
-        this.add(text = new JTabText(title), BorderLayout.WEST);
-        this.add(new JTabCloseButton(), BorderLayout.EAST);
+        this.add(text = new CTabText(title), BorderLayout.WEST);
+        this.add(new CTabCloseButton(), BorderLayout.EAST);
     }
     public int getTabID(){
         return tabID;
     }
-    private class JTabText extends WebLabel{
-        public JTabText(String title){
+    public CTabText getCTabText(){
+        return this.text;
+    }
+    private class CTabText extends WebLabel{
+        public CTabText(String title){
             this.setPreferredSize(new Dimension(130, 20));
             this.setText(title.isEmpty() ? "Nueva pestaña" : title);
             this.setToolTip(title.isEmpty() ? "Nueva pestaña" : title);
             this.setMargin(0, 0, 0, 0);
             this.setHorizontalTextPosition(WebLabel.RIGHT);
-            //this.setForeground(Color.BLACK);
+            //this.setForeground(Color.black);
             this.setIcon(iconBlankPage);
             this.addMouseListener(tabMouseListener);  
         }
@@ -77,15 +80,19 @@ public class CTab extends WebPanel {
             @Override
             public void mousePressed(MouseEvent e){
                 Component component = e.getComponent();
-                if (component instanceof JTabText) {
-                    JTabText text = (JTabText) component;
+                if (component instanceof CTabText) {
+                    TexturePainter tp4 = new TexturePainter (new ImageIcon(getClass().getResource("/com/olc2/resources/border.png")));
+                    CTabText text = (CTabText) component;
                     parent.setSelectedIndex(TabList.getInstancia().index((CTab)text.getParent()));
+                    /*parent.setBackgroundPainterAt(parent.getSelectedIndex(), tp4);
+                    CTab tab = (CTab)parent.getTabComponentAt(parent.getSelectedIndex());
+                    tab.getCTabText().setForeground(Color.WHITE);*/
                 }
             }
         };
     }
-    private class JTabCloseButton extends JButton{
-        public JTabCloseButton(){
+    private class CTabCloseButton extends JButton{
+        public CTabCloseButton(){
             this.setIcon(iconClose);
             this.setHorizontalAlignment(SwingConstants.CENTER);
             this.setMargin(new Insets(0,0,0,0));

@@ -5,16 +5,12 @@
  */
 package com.olc2.gui;
 
+import com.alee.extended.painter.PainterListener;
 import com.alee.extended.painter.TexturePainter;
 import com.alee.extended.window.ComponentMoveAdapter;
 import com.alee.laf.WebLookAndFeel;
-import com.alee.laf.button.WebButton;
-import com.alee.laf.menu.WebMenu;
-import com.alee.laf.menu.WebMenuBar;
-import com.alee.laf.menu.WebMenuItem;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.rootpane.WebFrame;
-import com.alee.laf.rootpane.WebRootPane;
 import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.tabbedpane.TabStretchType;
 import com.alee.laf.tabbedpane.TabbedPaneStyle;
@@ -23,11 +19,8 @@ import com.olc2.cswing.CTab;
 import com.olc2.cswing.CTabbedPaneUI;
 import com.olc2.model.TabList;
 import java.awt.Color;
-import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JRootPane;
 import javax.swing.JTextArea;
 
 /**
@@ -43,6 +36,7 @@ public class MainFrame extends WebFrame {
         initComponents();
         //Personalización
         ComponentMoveAdapter.install(tabPaneNavegador, MainFrame.this);
+        this.center();
         this.setIconImages(WebLookAndFeel.getImages());
         this.setInactiveShadeWidth(5);
         this.setShadeWidth(0);
@@ -61,19 +55,16 @@ public class MainFrame extends WebFrame {
         tabPaneNavegador.addTab("", new WebPanel());
         int i = TabList.getInstancia().getTabID();
         tabPaneNavegador.setTabComponentAt(0, new CTab(tabPaneNavegador, i, "Facebook"));
-        TexturePainter tp4 = new TexturePainter (new ImageIcon(getClass().getResource("/com/olc2/resources/back.png")));
         TabList.getInstancia().add(new CTab(tabPaneNavegador, i, "Facebook"));
         i = TabList.getInstancia().getTabID();
         tabPaneNavegador.setTabComponentAt(1, new CTab(tabPaneNavegador, i, ""));
-        //((WebTabbedPane)tabPaneNavegador).setBackgroundPainterAt(tabPaneNavegador.getTabCount () - 1, tp4);
-        ((WebTabbedPane)tabPaneNavegador).setPaintBorderOnlyOnSelectedTab(true);
+        //((WebTabbedPane)tabPaneNavegador).setSelectedTopBg(new Color(23, 32, 42));
         ((WebTabbedPane)tabPaneNavegador).setTabOverlay(1);
-        ((WebTabbedPane)tabPaneNavegador).setTabInsets(new Insets(3, 10, 3, 10));
-        ((WebTabbedPane)tabPaneNavegador).setTabRunIndent(10);
+        //((WebTabbedPane)tabPaneNavegador).setTabInsets(new Insets(3, 10, 3, 10));
         ((WebTabbedPane)tabPaneNavegador).setTabStretchType(TabStretchType.never);
         //((WebTabbedPane)tabPaneNavegador).setTabbedPaneStyle(TabbedPaneStyle.standalone);
         TabList.getInstancia().add(new CTab(tabPaneNavegador, i, ""));
-        ((WebTabbedPane)tabPaneNavegador).setTabbedPaneStyle(TabbedPaneStyle.standalone);
+        ((WebTabbedPane)tabPaneNavegador).setTabbedPaneStyle(TabbedPaneStyle.attached);
     }
 
     /**
