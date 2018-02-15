@@ -23,6 +23,7 @@ import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -62,7 +63,7 @@ public class CBrowserPane extends WebPanel {
         toolBarBrowser.setLayout(new BoxLayout(toolBarBrowser, BoxLayout.LINE_AXIS));
         
         //Button Back
-        toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
+        //toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
         WebButton buttonBack = new WebButton();
         buttonBack.setPreferredSize(30, 30);
         buttonBack.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_back_20px.png")));
@@ -126,7 +127,7 @@ public class CBrowserPane extends WebPanel {
         buttonSettings.setDrawFocus(false);
         buttonSettings.addMouseListener(buttonSettingsMouseListener);
         toolBarBrowser.add(buttonSettings);
-        toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
+        //toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
         
         //ToolBar Favs
         toolBarFavs.setShadeWidth(5);
@@ -179,10 +180,10 @@ public class CBrowserPane extends WebPanel {
         this.setLayout(panelBrowserLayout);
         panelBrowserLayout.setHorizontalGroup(
             panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(toolBarBrowser, GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-            .addComponent(toolBarFavs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(panelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(toolBarBrowser, GroupLayout.DEFAULT_SIZE, 540, Toolkit.getDefaultToolkit().getScreenSize().width-5)
+            .addComponent(toolBarFavs, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
+            .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
+            .addComponent(panelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
         );
         panelBrowserLayout.setVerticalGroup(
             panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -200,18 +201,11 @@ public class CBrowserPane extends WebPanel {
         @Override
         public void mouseClicked(MouseEvent e){
             if(e.getComponent() instanceof WebToggleButton){
-                WebToggleButton button = (WebToggleButton)e.getComponent();
-                button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
-                WebButton buttonFav = new WebButton();
-                buttonFav.setIconTextGap(5);
-                buttonFav.setMargin(new Insets(0,0,0,0));
-                buttonFav.setMaximumSize(new Dimension(150,25));
-                buttonFav.setMoveIconOnPress(false);
-                buttonFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
-                buttonFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
-                buttonFav.setRolloverDecoratedOnly(true);
-                buttonFav.setDrawFocus(false);
-                toolBarFavs.add(buttonFav);
+                //WebToggleButton button = (WebToggleButton)e.getComponent();
+                //button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
+                toolBarFavs.add(new WebButton("Nueva pestaña"));
+                toolBarFavs.revalidate();
+                toolBarFavs.repaint();
             }
         };
     };
