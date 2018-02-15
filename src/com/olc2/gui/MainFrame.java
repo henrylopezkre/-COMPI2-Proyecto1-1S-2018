@@ -42,7 +42,7 @@ public class MainFrame extends WebFrame {
         this.setInactiveShadeWidth(5);
         this.setShadeWidth(0);
         this.setShowTitleComponent(false);
-        this.setWindowOpacity(0.95f);
+        this.setWindowOpacity(0.99f);
         //
         
         tabPaneNavegador.setUI(new CTabbedPaneUI());
@@ -85,7 +85,9 @@ public class MainFrame extends WebFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabPaneNavegador, javax.swing.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(tabPaneNavegador, javax.swing.GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

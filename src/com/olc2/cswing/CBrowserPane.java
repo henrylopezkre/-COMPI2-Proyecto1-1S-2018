@@ -6,11 +6,15 @@
 package com.olc2.cswing;
 
 import com.alee.extended.image.WebImage;
+import com.alee.extended.label.WebLinkLabel;
+import com.alee.extended.panel.WebCollapsiblePane;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.scroll.WebScrollBar;
 import com.alee.laf.scroll.WebScrollPane;
+import com.alee.laf.text.WebEditorPane;
+import com.alee.laf.text.WebTextArea;
 import com.alee.laf.text.WebTextField;
 import com.alee.laf.toolbar.ToolbarStyle;
 import com.alee.laf.toolbar.WebToolBar;
@@ -18,13 +22,17 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -32,29 +40,18 @@ import javax.swing.ImageIcon;
  */
 public class CBrowserPane extends WebPanel {
     private WebToolBar toolBarBrowser;
+    private WebToolBar toolBarFavs;
     private WebScrollPane scrollPanePage;
     private CEditorPane editorPane;
-    public CBrowserPane(){
+    private WebCollapsiblePane panelOptions;
+    public CBrowserPane(){       
         this.editorPane = new CEditorPane();
         this.toolBarBrowser = new WebToolBar();
+        this.toolBarFavs = new WebToolBar();
         this.toolBarBrowser.setRollover(true);
         this.scrollPanePage = new WebScrollPane(this.editorPane);
         this.setBackground(new Color(255, 255, 255));
-        //Panel Brower Layout
-        GroupLayout panelBrowserLayout = new GroupLayout(this);
-        this.setLayout(panelBrowserLayout);
-        panelBrowserLayout.setHorizontalGroup(
-            panelBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolBarBrowser, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-            .addComponent(scrollPanePage)
-        );
-        panelBrowserLayout.setVerticalGroup(
-            panelBrowserLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBrowserLayout.createSequentialGroup()
-                .addComponent(toolBarBrowser, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(scrollPanePage, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE))
-        );
+        
         //ToolBar Browser
         toolBarBrowser.setShadeWidth(5);
         toolBarBrowser.setMargin(2, 0, 2, 0);
@@ -127,8 +124,77 @@ public class CBrowserPane extends WebPanel {
         buttonSettings.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px_blue.png")));
         buttonSettings.setRolloverDecoratedOnly(true);
         buttonSettings.setDrawFocus(false);
+        buttonSettings.addMouseListener(buttonSettingsMouseListener);
         toolBarBrowser.add(buttonSettings);
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
+        
+        //ToolBar Favs
+        toolBarFavs.setShadeWidth(5);
+        toolBarFavs.setMargin(2, 0, 2, 0);
+        toolBarFavs.setFloatable(false);
+        toolBarFavs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        toolBarFavs.setBorderPainted(false);
+        toolBarFavs.setToolbarStyle(ToolbarStyle.attached);
+        toolBarFavs.setLayout(new BoxLayout(toolBarFavs, BoxLayout.LINE_AXIS));
+        toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        //Fav
+        WebLinkLabel linkLabelFav = new WebLinkLabel();
+        linkLabelFav.setHighlight(false);
+        linkLabelFav.setForeground(Color.BLACK);
+        linkLabelFav.setLink("Google", "http://www.google.com", true);
+        //webLabel.set
+        linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px_blue.png")));
+        toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        toolBarFavs.add(linkLabelFav);
+        
+        //Button Fav
+        toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        WebButton buttonFav = new WebButton();
+        buttonFav.setIconTextGap(5);
+        buttonFav.setMargin(new Insets(0,0,0,0));
+        buttonFav.setMaximumSize(new Dimension(150,25));
+        buttonFav.setMoveIconOnPress(false);
+        buttonFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
+        buttonFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
+        buttonFav.setRolloverDecoratedOnly(true);
+        buttonFav.setDrawFocus(false);
+        toolBarFavs.add(buttonFav);
+        
+        //Panel Options
+        WebTextArea textArea = new WebTextArea("sdfasdfasdfasdfasdf");
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        WebScrollPane scrollPaneOptions = new WebScrollPane(textArea, false);
+        scrollPaneOptions.setPreferredSize(new Dimension(150, 100));
+        this.panelOptions = new WebCollapsiblePane(null, "Opciones del navegador", scrollPaneOptions);
+        //this.panelOptions.setTitle("Opciones");
+        //this.panelOptions.setContent(scrollPaneOptions);
+        this.panelOptions.setTitlePanePostion(SwingConstants.TOP);
+        this.panelOptions.setBackground(Color.red);
+        this.panelOptions.setExpanded(false);
+        this.panelOptions.setVisible(false);
+                
+        //Panel Browser Layout
+        GroupLayout panelBrowserLayout = new GroupLayout(this);
+        this.setLayout(panelBrowserLayout);
+        panelBrowserLayout.setHorizontalGroup(
+            panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addComponent(toolBarBrowser, GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addComponent(toolBarFavs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        panelBrowserLayout.setVerticalGroup(
+            panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(panelBrowserLayout.createSequentialGroup()
+                .addComponent(toolBarBrowser, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(toolBarFavs, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(panelOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+        );
     }
     private MouseListener buttonFavMouseListener = new MouseAdapter(){
         @Override
@@ -136,6 +202,28 @@ public class CBrowserPane extends WebPanel {
             if(e.getComponent() instanceof WebToggleButton){
                 WebToggleButton button = (WebToggleButton)e.getComponent();
                 button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
+                WebButton buttonFav = new WebButton();
+                buttonFav.setIconTextGap(5);
+                buttonFav.setMargin(new Insets(0,0,0,0));
+                buttonFav.setMaximumSize(new Dimension(150,25));
+                buttonFav.setMoveIconOnPress(false);
+                buttonFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
+                buttonFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
+                buttonFav.setRolloverDecoratedOnly(true);
+                buttonFav.setDrawFocus(false);
+                toolBarFavs.add(buttonFav);
+            }
+        };
+    };
+    private MouseListener buttonSettingsMouseListener = new MouseAdapter(){
+        @Override
+        public void mouseClicked(MouseEvent e){
+            if(panelOptions.isVisible()){
+                panelOptions.setExpanded(false);
+                panelOptions.setVisible(false);
+            }else{
+                panelOptions.setVisible(true);
+                panelOptions.setExpanded(true);
             }
         };
     };
