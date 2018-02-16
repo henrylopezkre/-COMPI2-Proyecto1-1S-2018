@@ -7,13 +7,16 @@ package com.olc2.cswing;
 
 import com.alee.extended.image.WebImage;
 import com.alee.extended.label.WebLinkLabel;
+import com.alee.extended.painter.TexturePainter;
 import com.alee.extended.panel.WebCollapsiblePane;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
+import com.alee.extended.panel.WebButtonGroup;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.scroll.WebScrollBar;
 import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.text.WebEditorPane;
+import com.alee.laf.splitpane.WebSplitPane;
 import com.alee.laf.text.WebTextArea;
 import com.alee.laf.text.WebTextField;
 import com.alee.laf.toolbar.ToolbarStyle;
@@ -34,6 +37,8 @@ import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -58,7 +63,6 @@ public class CBrowserPane extends WebPanel {
         toolBarBrowser.setMargin(2, 0, 2, 0);
         toolBarBrowser.setFloatable(false);
         toolBarBrowser.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        toolBarBrowser.setBorderColor(new Color(85, 142, 239));
         toolBarBrowser.setToolbarStyle(ToolbarStyle.attached);
         toolBarBrowser.setLayout(new BoxLayout(toolBarBrowser, BoxLayout.LINE_AXIS));
         
@@ -93,6 +97,8 @@ public class CBrowserPane extends WebPanel {
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
         WebTextField textFieldAddress = new WebTextField();
         textFieldAddress.setLeadingComponent(new WebImage(getClass().getResource("/com/olc2/resources/ic_search_18px.png")));
+        //textFieldAddress.setBackground(new Color(45, 45, 45));
+        //textFieldAddress.setForeground(new Color(206, 206, 206));
         textFieldAddress.setInputPrompt("Ingrese una dirección");
         textFieldAddress.setMargin(2, 5, 2, 5);
         textFieldAddress.setHideInputPromptOnFocus(false);
@@ -120,9 +126,9 @@ public class CBrowserPane extends WebPanel {
         
         //Button Settings
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebButton buttonSettings = new WebButton();
+        WebToggleButton buttonSettings = new WebToggleButton();
         buttonSettings.setPreferredSize(30, 30);
-        buttonSettings.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px_blue.png")));
+        buttonSettings.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         buttonSettings.setRolloverDecoratedOnly(true);
         buttonSettings.setDrawFocus(false);
         buttonSettings.addMouseListener(buttonSettingsMouseListener);
@@ -134,17 +140,18 @@ public class CBrowserPane extends WebPanel {
         toolBarFavs.setMargin(2, 0, 2, 0);
         toolBarFavs.setFloatable(false);
         toolBarFavs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        toolBarFavs.setBorderPainted(false);
         toolBarFavs.setToolbarStyle(ToolbarStyle.attached);
         toolBarFavs.setLayout(new BoxLayout(toolBarFavs, BoxLayout.LINE_AXIS));
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        
         //Fav
         WebLinkLabel linkLabelFav = new WebLinkLabel();
         linkLabelFav.setHighlight(false);
         linkLabelFav.setForeground(Color.BLACK);
         linkLabelFav.setLink("Google", "http://www.google.com", true);
         //webLabel.set
-        linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px_blue.png")));
+        linkLabelFav.setForeground(new Color(206, 206, 206));
+        linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
         toolBarFavs.add(linkLabelFav);
         
@@ -171,9 +178,24 @@ public class CBrowserPane extends WebPanel {
         //this.panelOptions.setTitle("Opciones");
         //this.panelOptions.setContent(scrollPaneOptions);
         this.panelOptions.setTitlePanePostion(SwingConstants.TOP);
-        this.panelOptions.setBackground(Color.red);
         this.panelOptions.setExpanded(false);
         this.panelOptions.setVisible(false);
+        
+        //
+        WebToggleButton buttonCHTML = new WebToggleButton("CHTML");
+        WebToggleButton buttonCJS = new WebToggleButton("CJS");
+        WebToggleButton buttonCCSS = new WebToggleButton("CCSS");
+        WebButtonGroup textGroup = new WebButtonGroup(true, buttonCHTML, buttonCJS, buttonCCSS);
+        textGroup.setButtonsDrawFocus(true);
+        textGroup.setOrientation(SwingConstants.VERTICAL);
+        
+        WebSplitPane splitPane = new WebSplitPane (WebSplitPane.HORIZONTAL_SPLIT, textGroup, new WebPanel());
+        splitPane.setOneTouchExpandable(false);
+        splitPane.setPreferredSize(new Dimension(250, 200));
+        splitPane.setDrawDividerBorder(true);
+        splitPane.setDividerLocation(125);
+        splitPane.setContinuousLayout(true);     
+        this.panelOptions.setContent(splitPane);
                 
         //Panel Browser Layout
         GroupLayout panelBrowserLayout = new GroupLayout(this);
@@ -201,8 +223,8 @@ public class CBrowserPane extends WebPanel {
         @Override
         public void mouseClicked(MouseEvent e){
             if(e.getComponent() instanceof WebToggleButton){
-                //WebToggleButton button = (WebToggleButton)e.getComponent();
-                //button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
+                WebToggleButton button = (WebToggleButton)e.getComponent();
+                button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
                 toolBarFavs.add(new WebButton("Nueva pestaña"));
                 toolBarFavs.revalidate();
                 toolBarFavs.repaint();
@@ -218,6 +240,10 @@ public class CBrowserPane extends WebPanel {
             }else{
                 panelOptions.setVisible(true);
                 panelOptions.setExpanded(true);
+            }
+            if(e.getComponent() instanceof WebToggleButton){
+                WebToggleButton button = (WebToggleButton)e.getComponent();
+                button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_settings_pressed_20px.png" : "/com/olc2/resources/ic_settings_20px.png")));
             }
         };
     };

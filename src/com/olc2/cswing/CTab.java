@@ -52,7 +52,7 @@ public class CTab extends WebPanel {
         this.iconBlankPage = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_blank_page_20px.png"));
         this.iconClose = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_14px.png"));
         this.iconCloseHover = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_hover_18px.png"));
-        this.iconClosePressed = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_pressed_20px.png"));
+        this.iconClosePressed = new ImageIcon(getClass().getResource("/com/olc2/resources/ic_close_pressed_18px.png"));
         this.setPreferredSize(new Dimension(150, 20));
         this.setBackground(parent.getParent().getBackground());
         this.setToolTip(title);
@@ -65,6 +65,12 @@ public class CTab extends WebPanel {
     public CTabText getCTabText(){
         return this.text;
     }
+    @Override
+    public void setForeground(Color color){
+        if(text instanceof CTabText){
+            text.setForeground(color);
+        }
+    }
     private class CTabText extends WebLabel{
         public CTabText(String title){
             this.setPreferredSize(new Dimension(130, 20));
@@ -72,7 +78,6 @@ public class CTab extends WebPanel {
             this.setToolTip(title.isEmpty() ? "Nueva pestaña" : title);
             this.setMargin(0, 0, 0, 0);
             this.setHorizontalTextPosition(WebLabel.RIGHT);
-            //this.setForeground(Color.black);
             this.setIcon(iconBlankPage);
             this.addMouseListener(tabMouseListener);  
         }
@@ -81,9 +86,9 @@ public class CTab extends WebPanel {
             public void mousePressed(MouseEvent e){
                 Component component = e.getComponent();
                 if (component instanceof CTabText) {
-                    TexturePainter tp4 = new TexturePainter (new ImageIcon(getClass().getResource("/com/olc2/resources/border.png")));
                     CTabText text = (CTabText) component;
                     parent.setSelectedIndex(TabList.getInstancia().index((CTab)text.getParent()));
+                    
                     /*parent.setBackgroundPainterAt(parent.getSelectedIndex(), tp4);
                     CTab tab = (CTab)parent.getTabComponentAt(parent.getSelectedIndex());
                     tab.getCTabText().setForeground(Color.WHITE);*/
