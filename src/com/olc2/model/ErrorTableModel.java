@@ -7,8 +7,6 @@ package com.olc2.model;
 
 import com.olc2.bean.Error;
 import com.olc2.list.ErrorList;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -16,7 +14,7 @@ import javax.swing.table.AbstractTableModel;
  * @author henry
  */
 public class ErrorTableModel extends AbstractTableModel {
-private ErrorList listError;
+    private ErrorList listError;
     private final String[] columnNames = 
             new String[]{"No.", "Archivo", "Línea", "Columna", "Tipo", "Descripción"};
     public ErrorTableModel(ErrorList listError){

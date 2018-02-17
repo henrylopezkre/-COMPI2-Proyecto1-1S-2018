@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class ErrorList {
+public class ErrorList implements CList<Error> {
     private List<Error> errorList;
     private static ErrorList instancia;
     public static synchronized ErrorList getInstancia(){
@@ -25,16 +25,20 @@ public class ErrorList {
     public ErrorList(){
         this.errorList = new ArrayList();
     }
-    public void add(Error error){
-        errorList.add(error);
+    @Override
+    public void add(Error object) {
+        errorList.add(object);
     }
-    public void remove(int index){
+    @Override
+    public void remove(int index) {
         errorList.remove(errorList.get(index));
     }
-    public Error get(int index){
+    @Override
+    public Error get(int index) {
         return errorList.get(index);
     }
-    public int size(){
+    @Override
+    public int size() {
         return errorList.size();
     }
 }

@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class OutputList {
+public class OutputList implements CList<Output>{
     private List<Output> outputList;
     private static OutputList instancia;
     public static synchronized OutputList getInstancia(){
@@ -25,15 +25,19 @@ public class OutputList {
     public OutputList(){
         this.outputList = new ArrayList();
     }
-    public void add(Output output){
-        outputList.add(output);
+    @Override
+    public void add(Output object){
+        outputList.add(object);
     }
+    @Override
     public void remove(int index){
         outputList.remove(outputList.get(index));
     }
+    @Override
     public Output get(int index){
         return outputList.get(index);
     }
+    @Override
     public int size(){
         return outputList.size();
     }

@@ -6,80 +6,79 @@
 package com.olc2.cswing;
 
 import com.alee.extended.image.WebImage;
-import com.alee.extended.label.WebLinkLabel;
-import com.alee.extended.list.FileListModel;
+import com.alee.extended.layout.VerticalFlowLayout;
 import com.alee.extended.list.FileListViewType;
 import com.alee.extended.list.WebFileList;
+import com.alee.extended.panel.SingleAlignPanel;
 import com.alee.extended.panel.WebCollapsiblePane;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.extended.panel.WebButtonGroup;
 import com.alee.extended.tab.DocumentData;
-import com.alee.extended.tab.PaneData;
-import com.alee.extended.tab.TabTitleComponentProvider;
 import com.alee.extended.tab.WebDocumentPane;
-import com.alee.global.StyleConstants;
-import com.alee.laf.WebLookAndFeel;
+import com.alee.extended.window.WebPopOver;
 import com.alee.laf.label.WebLabel;
+import com.alee.laf.list.WebList;
 import com.alee.laf.panel.WebPanel;
+import com.alee.extended.panel.TwoSidesPanel;
+import com.alee.extended.window.PopOverDirection;
 import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.splitpane.WebSplitPane;
 import com.alee.laf.table.WebTable;
 import com.alee.laf.text.WebTextField;
 import com.alee.laf.toolbar.ToolbarStyle;
 import com.alee.laf.toolbar.WebToolBar;
-import com.alee.utils.FileUtils;
-import com.alee.utils.file.FileComparator;
-import com.alee.utils.swing.Customizer;
+import com.alee.managers.popup.PopupWay;
+import com.alee.managers.popup.WebButtonPopup;
 import com.olc2.bean.Error;
 import com.olc2.bean.Error.Type;
+import com.olc2.bean.Fav;
 import com.olc2.bean.Output;
 import com.olc2.list.ErrorList;
+import com.olc2.list.FavList;
 import com.olc2.list.OutputList;
 import com.olc2.model.ErrorTableModel;
+import com.olc2.model.FavListModel;
 import com.olc2.model.OutputTableModel;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 /**
  *
  * @author henry
  */
 public class CBrowserPane extends WebPanel {
+    private WebScrollPane scrollPanePage, scrollPaneListDocs, scrollPaneDocs, scrollPaneConsole, scrollPaneListFavs;
     private WebToolBar toolBarBrowser, toolBarFavs, toolBarOptions;
-    private WebScrollPane scrollPanePage, scrollPaneListDocs, scrollPaneDocs, scrollPaneConsole;
+    private WebButtonPopup buttonPopupListFavs;
     private CEditorPane editorPanePage, editorPaneDocs;
     private WebCollapsiblePane panelOptions;
     private WebFileList fileListDocs;
@@ -88,6 +87,9 @@ public class CBrowserPane extends WebPanel {
     private WebSplitPane splitPaneDocs;
     private WebTable tableOutput, tableErrors;
     private WebPanel panelOptionContainer;
+    private WebToggleButton buttonFav, buttonSettings;
+    private WebList listFavs;
+    private WebPopOver popOverFav;
     public CBrowserPane(){       
         this.colorForeOptions = new Color(255, 255, 255);
         this.colorBackOptions = new Color(44,124,203);
@@ -139,25 +141,25 @@ public class CBrowserPane extends WebPanel {
         
         //TextField Address
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebTextField textFieldAddress = new WebTextField();
-        textFieldAddress.setLeadingComponent(new WebImage(getClass().getResource("/com/olc2/resources/ic_search_18px.png")));
-        //textFieldAddress.setBackground(new Color(45, 45, 45));
-        //textFieldAddress.setForeground(new Color(206, 206, 206));
-        textFieldAddress.setInputPrompt("Ingrese una dirección");
-        textFieldAddress.setMargin(2, 5, 2, 5);
-        textFieldAddress.setHideInputPromptOnFocus(false);
-        textFieldAddress.setRound(3);
+        WebTextField textFieldURL = new WebTextField();
+        textFieldURL.setLeadingComponent(new WebImage(getClass().getResource("/com/olc2/resources/ic_search_18px.png")));
+        //textFieldURL.setBackground(new Color(45, 45, 45));
+        //textFieldURL.setForeground(new Color(206, 206, 206));
+        textFieldURL.setInputPrompt("Ingrese una dirección");
+        textFieldURL.setMargin(2, 5, 2, 5);
+        textFieldURL.setHideInputPromptOnFocus(false);
+        textFieldURL.setRound(3);
         
         //Button Favs
-        WebToggleButton buttonFavs = new WebToggleButton();
-        buttonFavs.setFocusable(false);
-        buttonFavs.setUndecorated(true);
-        buttonFavs.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));      
-        buttonFavs.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_fav_20px.png")));
-        buttonFavs.addMouseListener(buttonFavMouseListener);
-        textFieldAddress.setTrailingComponent(buttonFavs);
+        buttonFav = new WebToggleButton();
+        buttonFav.setFocusable(false);
+        buttonFav.setUndecorated(true);
+        buttonFav.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));      
+        buttonFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_fav_20px.png")));
+        buttonFav.addActionListener(buttonFavActionListener);
+        textFieldURL.setTrailingComponent(buttonFav);
         toolBarBrowser.add(Box.createHorizontalGlue());
-        toolBarBrowser.add(textFieldAddress);
+        toolBarBrowser.add(textFieldURL);
         
          //Button History
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
@@ -170,7 +172,7 @@ public class CBrowserPane extends WebPanel {
         
         //Button Settings
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebToggleButton buttonSettings = new WebToggleButton();
+        buttonSettings = new WebToggleButton();
         buttonSettings.setPreferredSize(30, 30);
         buttonSettings.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         buttonSettings.setRolloverDecoratedOnly(true);
@@ -179,49 +181,145 @@ public class CBrowserPane extends WebPanel {
         toolBarBrowser.add(buttonSettings);
         //toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
         
+        //TextField FavName
+        WebTextField textFieldFavName = new WebTextField();
+        textFieldFavName.setInputPrompt("Nombre del favorito");
+        textFieldFavName.setHideInputPromptOnFocus(false);
+        textFieldFavName.setPreferredSize(new Dimension(200, 30));
+        
+        
+        //TextField FavURL
+        WebTextField textFieldFavURL = new WebTextField();
+        textFieldFavURL.setPreferredSize(new Dimension(200, 30));
+        textFieldFavURL.setEditable(false);
+        
+        
+        //Button SaveFav
+        WebButton buttonSaveFav = new WebButton();
+        buttonSaveFav.setPreferredSize(75, 30);
+        buttonSaveFav.setBottomBgColor(new Color(46, 134, 193));
+        buttonSaveFav.setTopBgColor(new Color(46, 134, 193));
+        buttonSaveFav.setBottomSelectedBgColor(new Color(46, 134, 193));
+        buttonSaveFav.setTopSelectedBgColor(new Color(46, 134, 193));
+        buttonSaveFav.setForeground(new Color(255, 255, 255));
+        buttonSaveFav.setSelectedForeground(new Color(255, 255, 255));
+        buttonSaveFav.addActionListener(buttonSaveFavActionListener);
+        buttonSaveFav.setText("Listo");
+        buttonSaveFav.setDrawFocus(false);
+        
+        //Button RemoveFav
+        WebButton buttonRemoveFav = new WebButton();
+        buttonRemoveFav.setPreferredSize(75, 30);
+        buttonRemoveFav.addActionListener(buttonRemoveFavActionListener);
+        buttonRemoveFav.setText("Eliminar");
+        buttonRemoveFav.setDrawFocus(false);
+        
+        //ButtonGroup Options
+        WebButtonGroup buttonGroupFav = new WebButtonGroup(true, buttonSaveFav, buttonRemoveFav);
+        //buttonGroupFav.setButtonsDrawSides(false, false, false, false);
+        buttonGroupFav.setButtonsMargin(2);
+        buttonGroupFav.setOrientation(SwingConstants.HORIZONTAL);
+        
+        //PopOver Fav
+        popOverFav = new WebPopOver(buttonFav);
+        popOverFav.setModal(false);
+        popOverFav.setMargin(10);
+        popOverFav.setMovable(false);
+        popOverFav.setModalityType(Dialog.ModalityType.TOOLKIT_MODAL);
+        popOverFav.setPreferredDirection(PopOverDirection.down);
+        popOverFav.setLayout(new VerticalFlowLayout());
+        popOverFav.add(new SingleAlignPanel(new WebLabel("Se añadió a Favoritos").setFontSize(14), 
+                SingleAlignPanel.LEFT).setMargin(5));
+        popOverFav.add(new TwoSidesPanel(new WebLabel("Nombre").setMargin(5, 5, 5, 10), textFieldFavName).setMargin(5));
+        popOverFav.add(new TwoSidesPanel(new WebLabel("URL").setMargin(5, 5, 5, 10), textFieldFavURL).setMargin(5));
+        popOverFav.add(new SingleAlignPanel(buttonGroupFav, SingleAlignPanel.RIGHT).setMargin(5));
+        
         //ToolBar Favs
         toolBarFavs.setShadeWidth(5);
         toolBarFavs.setMargin(2, 0, 2, 0);
         toolBarFavs.setFloatable(false);
         toolBarFavs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         toolBarFavs.setToolbarStyle(ToolbarStyle.attached);
-        //toolBarFavs.setLayout(new BoxLayout(toolBarFavs, BoxLayout.LINE_AXIS));
-        //toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
         
         //Fav
-        WebLinkLabel linkLabelFav = new WebLinkLabel();
+        /*WebLinkLabel linkLabelFav = new WebLinkLabel();
         linkLabelFav.setHighlight(false);
         linkLabelFav.setForeground(Color.BLACK);
         linkLabelFav.setLink("Google", "http://www.google.com", true);
-        //webLabel.set
         linkLabelFav.setForeground(new Color(206, 206, 206));
         linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
-        //toolBarFavs.add(linkLabelFav);
+        toolBarFavs.add(linkLabelFav);*/
         
         //Button Fav
-        toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebButton buttonFav = new WebButton();
-        buttonFav.setIconTextGap(5);
-        buttonFav.setMargin(new Insets(0,0,0,0));
-        buttonFav.setMaximumSize(new Dimension(150,25));
-        buttonFav.setMoveIconOnPress(false);
-        buttonFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
-        buttonFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
-        buttonFav.setRolloverDecoratedOnly(true);
-        buttonFav.setDrawFocus(false);
+        //toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        WebButton buttonNewFav = new WebButton();
+        buttonNewFav.setIconTextGap(5);
+        buttonNewFav.setMargin(new Insets(0,0,0,0));
+        buttonNewFav.setPreferredSize(new Dimension(150,25));
+        buttonNewFav.setMoveIconOnPress(false);
+        buttonNewFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
+        buttonNewFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
+        buttonNewFav.setRolloverDecoratedOnly(true);
+        buttonNewFav.setDrawFocus(false);
         
+        
+        //Button FavList
         WebButton buttonFavList = new WebButton();
         buttonFavList.setIconTextGap(5);
         buttonFavList.setMargin(new Insets(0,0,0,0));
-        buttonFavList.setMaximumSize(new Dimension(25,25));
+        buttonFavList.setMaximumSize(new Dimension(16,16));
         buttonFavList.setMoveIconOnPress(false);
-        buttonFavList.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_20px.png")));
+        buttonFavList.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_16px.png")));
         buttonFavList.setRolloverDecoratedOnly(true);
         buttonFavList.setDrawFocus(false);
         
+        //Label Fav
+        WebLabel labelFav = new WebLabel();
+        labelFav.setIconTextGap(2);
+        labelFav.setMargin(new Insets(0,5,0,2));
+        labelFav.setMaximumSize(new Dimension(16,16));
+        labelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_fav_folder_18px.png")));
+        labelFav.setFontSizeAndStyle(11, Font.BOLD);
+        labelFav.setText("Favoritos");
+
+        FavList f = new FavList();
+        f.add(new Fav("ic_favlist_16px.png", "Item 1", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 2", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 3", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 4", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 5", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 6", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 7", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 8", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 9", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 10", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 11", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 12", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 13", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 14", "C:/Holaputomundo.html"));
+        f.add(new Fav("ic_favlist_16px.png", "Item 15", "C:/Holaputomundo.html"));
+        
+        //List Favs
+        listFavs = new WebList(new FavListModel(f));
+        listFavs.setCellRenderer(listCellRendererFavs);
+        listFavs.setMultiplySelectionAllowed(false);
+        listFavs.setVisibleRowCount(10);
+        listFavs.addMouseListener(listFavsMouseListener);
+        
+        //ScrollPane ListFavs
+        scrollPaneListFavs = new WebScrollPane(listFavs);
+        scrollPaneListFavs.setBorder(BorderFactory.createEmptyBorder());
+        
+        //ButtonPopup FavList
+        buttonPopupListFavs = new WebButtonPopup(buttonFavList, PopupWay.downLeft);
+        buttonPopupListFavs.setContent(scrollPaneListFavs);
+                
         //toolBarFavs.add(buttonFav);
-        toolBarFavs.addToEnd(WebButton.createIconWebButton(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_16px.png")), StyleConstants.mediumRound, true));
+        toolBarFavs.add(labelFav);
+        toolBarFavs.addSeparator();
+        toolBarFavs.add(buttonNewFav);
+        toolBarFavs.addToEnd(buttonFavList);
         
         //ToolBar Options
         toolBarOptions.setShadeWidth(5);
@@ -339,32 +437,31 @@ public class CBrowserPane extends WebPanel {
                 .addComponent(panelOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );       
     }
-    private MouseListener buttonFavMouseListener = new MouseAdapter(){
+    private ActionListener buttonFavActionListener = new ActionListener(){
         @Override
-        public void mouseClicked(MouseEvent e){
-            if(e.getComponent() instanceof WebToggleButton){
-                WebToggleButton button = (WebToggleButton)e.getComponent();
-                button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_fav_pressed_20px.png" : "/com/olc2/resources/ic_fav_20px.png")));
-                toolBarFavs.add(new WebButton("Nueva pestaña"));
-                toolBarFavs.revalidate();
-                toolBarFavs.repaint();
-            }
+        public void actionPerformed(ActionEvent e){
+            buttonFav.setSelected(true);
+            buttonFav.setIcon(new ImageIcon(getClass().getResource(buttonFav.isSelected() 
+                    ? "/com/olc2/resources/ic_fav_pressed_20px.png" 
+                    : "/com/olc2/resources/ic_fav_20px.png")));
+            
+            //toolBarFavs.add(new WebButton("Nueva pestaña"));
+            //toolBarFavs.revalidate();
+            //toolBarFavs.updateUI();
+            //System.out.println(buttonFav.isSelected());
+            popOverFav.show(buttonFav);
+            
         };
     };
     private MouseListener buttonSettingsMouseListener = new MouseAdapter(){
         @Override
         public void mouseClicked(MouseEvent e){
-            if(panelOptions.isVisible()){
-                panelOptions.setExpanded(false);
-                panelOptions.setVisible(false);
-            }else{
-                panelOptions.setVisible(true);
-                panelOptions.setExpanded(true);
-            }
-            if(e.getComponent() instanceof WebToggleButton){
-                WebToggleButton button = (WebToggleButton)e.getComponent();
-                button.setIcon(new ImageIcon(getClass().getResource(button.isSelected() ? "/com/olc2/resources/ic_settings_pressed_20px.png" : "/com/olc2/resources/ic_settings_20px.png")));
-            }
+            buttonSettings.setIcon(new ImageIcon(getClass().getResource(buttonSettings.isSelected() 
+                    ? "/com/olc2/resources/ic_settings_pressed_20px.png" 
+                    : "/com/olc2/resources/ic_settings_20px.png")));
+            panelOptions.setExpanded(!panelOptions.isVisible());
+            panelOptions.setVisible(!panelOptions.isVisible());
+            loadListDocs("C:\\Users\\henry\\Documents\\Prueba", ".html");
         };
     };
        
@@ -439,7 +536,7 @@ public class CBrowserPane extends WebPanel {
                     }
                 });
                 fileListDocs.revalidate();
-                fileListDocs.repaint();
+                fileListDocs.updateUI();
             }
         }); 
     }
@@ -469,6 +566,7 @@ public class CBrowserPane extends WebPanel {
             }
         });
     };
+    
     private ImageIcon getIconDocs(String fileName){
         String icon = "";
         if(fileName.endsWith("html")){
@@ -480,4 +578,47 @@ public class CBrowserPane extends WebPanel {
         }
         return new ImageIcon(getClass().getResource("/com/olc2/resources/" + icon));
     }
+    
+    private ListCellRenderer listCellRendererFavs = new ListCellRenderer() {
+        @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                WebButton button = null;
+                if(value instanceof WebButton){
+                    button = (WebButton)value;
+                    button.setIconTextGap(5);
+                    button.setMargin(new Insets(0,0,0,0));
+                    button.setPreferredSize(new Dimension(150,25));
+                    button.setHorizontalAlignment(SwingConstants.LEADING);
+                    button.setRolloverDecoratedOnly(true);
+                    button.setDrawFocus(false);
+                }
+                return button;
+        }
+    };
+    
+    private MouseListener listFavsMouseListener = new MouseAdapter(){
+        @Override
+        public void mouseClicked(MouseEvent e){
+            listFavs.clearSelection();
+            buttonPopupListFavs.hidePopup();
+        }
+    }; 
+    
+    private ActionListener buttonSaveFavActionListener = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            popOverFav.dispose();
+        }
+    };
+    
+    private ActionListener buttonRemoveFavActionListener = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            buttonFav.setSelected(false);
+            buttonFav.setIcon(new ImageIcon(getClass().getResource(buttonFav.isSelected() 
+                    ? "/com/olc2/resources/ic_fav_pressed_20px.png" 
+                    : "/com/olc2/resources/ic_fav_20px.png")));
+            popOverFav.dispose();
+        }
+    };
 }
