@@ -7,11 +7,17 @@ package com.olc2.cswing;
 
 import com.alee.extended.image.WebImage;
 import com.alee.extended.label.WebLinkLabel;
+import com.alee.extended.list.FileListViewType;
+import com.alee.extended.list.WebFileList;
 import com.alee.extended.painter.TexturePainter;
 import com.alee.extended.panel.WebCollapsiblePane;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.button.WebToggleButton;
 import com.alee.extended.panel.WebButtonGroup;
+import com.alee.laf.label.WebLabel;
+import com.alee.laf.menu.MenuBarStyle;
+import com.alee.laf.menu.WebMenu;
+import com.alee.laf.menu.WebMenuBar;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.scroll.WebScrollBar;
 import com.alee.laf.scroll.WebScrollPane;
@@ -47,13 +53,18 @@ import javax.swing.event.ChangeListener;
 public class CBrowserPane extends WebPanel {
     private WebToolBar toolBarBrowser;
     private WebToolBar toolBarFavs;
+    private WebToolBar toolBarOptions;
     private WebScrollPane scrollPanePage;
     private CEditorPane editorPane;
     private WebCollapsiblePane panelOptions;
+    private Color colorForeOptions, colorBackOptions;
     public CBrowserPane(){       
+        this.colorForeOptions = new Color(255, 255, 255);
+        this.colorBackOptions = new Color(44,124,203);
         this.editorPane = new CEditorPane();
         this.toolBarBrowser = new WebToolBar();
         this.toolBarFavs = new WebToolBar();
+        this.toolBarOptions = new WebToolBar();
         this.toolBarBrowser.setRollover(true);
         this.scrollPanePage = new WebScrollPane(this.editorPane);
         this.setBackground(new Color(255, 255, 255));
@@ -168,32 +179,71 @@ public class CBrowserPane extends WebPanel {
         buttonFav.setDrawFocus(false);
         toolBarFavs.add(buttonFav);
         
-        //Panel Options
-        WebTextArea textArea = new WebTextArea("sdfasdfasdfasdfasdf");
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        WebScrollPane scrollPaneOptions = new WebScrollPane(textArea, false);
-        scrollPaneOptions.setPreferredSize(new Dimension(150, 100));
-        this.panelOptions = new WebCollapsiblePane(null, "Opciones del navegador", scrollPaneOptions);
-        //this.panelOptions.setTitle("Opciones");
-        //this.panelOptions.setContent(scrollPaneOptions);
+        //ToolBar Options
+        toolBarOptions.setShadeWidth(5);
+        toolBarOptions.setMargin(0, 0, 0, 0);
+        toolBarOptions.setFloatable(false);
+        toolBarOptions.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+        toolBarOptions.setToolbarStyle(ToolbarStyle.attached);
+        toolBarOptions.setLayout(new BoxLayout(toolBarOptions, BoxLayout.LINE_AXIS));
+        toolBarOptions.add(Box.createRigidArea(new Dimension(5, 0)));
+               
+        //ToggleButton CHTML
+        WebToggleButton buttonCHTML = new WebToggleButton("CHTML");
+        buttonCHTML.setBottomSelectedBgColor(colorBackOptions);
+        buttonCHTML.setTopSelectedBgColor(colorBackOptions);
+        buttonCHTML.setSelected(true);
+        
+        //ToggleButton CJS
+        WebToggleButton buttonCJS = new WebToggleButton("CJS");
+        buttonCJS.setBottomSelectedBgColor(colorBackOptions);
+        buttonCJS.setTopSelectedBgColor(colorBackOptions);
+        
+        //ToggleButton CCSS
+        WebToggleButton buttonCCSS = new WebToggleButton("CCSS");
+        buttonCCSS.setBottomSelectedBgColor(colorBackOptions);
+        buttonCCSS.setTopSelectedBgColor(colorBackOptions);
+        
+        //ToggleButton Output
+        WebToggleButton buttonOutput = new WebToggleButton("Salida");
+        buttonOutput.setBottomSelectedBgColor(colorBackOptions);
+        buttonOutput.setTopSelectedBgColor(colorBackOptions);
+        
+        //ToggleButton Error
+        WebToggleButton buttonError = new WebToggleButton("Errores");
+        buttonError.setBottomSelectedBgColor(colorBackOptions);
+        buttonError.setTopSelectedBgColor(colorBackOptions);
+        
+        //ButtonGroup Options
+        WebButtonGroup buttonGroupOptions = new WebButtonGroup(true, buttonCHTML, buttonCJS, buttonCCSS, buttonOutput, buttonError);
+        buttonGroupOptions.setButtonsDrawSides(false, false, false, false);
+        buttonGroupOptions.setButtonsMargin(2);
+        buttonGroupOptions.setButtonsSelectedForeground(colorForeOptions);
+        buttonGroupOptions.setOrientation(SwingConstants.HORIZONTAL);
+        
+        //CollapsiblePane Options
+        this.panelOptions = new WebCollapsiblePane();
+        this.panelOptions.setTitle("Opciones");
+        this.panelOptions.setTitleComponent(buttonGroupOptions);
         this.panelOptions.setTitlePanePostion(SwingConstants.TOP);
-        this.panelOptions.setExpanded(false);
+        this.panelOptions.setTitleAlignment(SwingConstants.CENTER);
+        this.panelOptions.setShowStateIcon(true);
+        this.panelOptions.setExpanded(true);
         this.panelOptions.setVisible(false);
         
         //
-        WebToggleButton buttonCHTML = new WebToggleButton("CHTML");
-        WebToggleButton buttonCJS = new WebToggleButton("CJS");
-        WebToggleButton buttonCCSS = new WebToggleButton("CCSS");
-        WebButtonGroup textGroup = new WebButtonGroup(true, buttonCHTML, buttonCJS, buttonCCSS);
-        textGroup.setButtonsDrawFocus(true);
-        textGroup.setOrientation(SwingConstants.VERTICAL);
+        WebFileList webFileList = new WebFileList ();
+        webFileList.setFileListViewType(FileListViewType.icons);
+        webFileList.setPreferredColumnCount(1);
+        webFileList.setPreferredRowCount(5);
         
-        WebSplitPane splitPane = new WebSplitPane (WebSplitPane.HORIZONTAL_SPLIT, textGroup, new WebPanel());
+        
+        WebSplitPane splitPane = new WebSplitPane (WebSplitPane.HORIZONTAL_SPLIT, new WebPanel(), new WebPanel());
         splitPane.setOneTouchExpandable(false);
         splitPane.setPreferredSize(new Dimension(250, 200));
-        splitPane.setDrawDividerBorder(true);
-        splitPane.setDividerLocation(125);
+        splitPane.setDividerBorderColor(colorBackOptions);
+        splitPane.setResizeWeight(0.0);
+        splitPane.setDividerLocation(200);
         splitPane.setContinuousLayout(true);     
         this.panelOptions.setContent(splitPane);
                 

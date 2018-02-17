@@ -122,9 +122,9 @@ public class CTabbedPaneUI extends WebTabbedPaneUI{
         }
         public void mouseClicked(MouseEvent e){
             if(rectNew.contains(e.getPoint())){
-                tabPane.addTab("", new WebPanel());
+                tabPane.addTab("", new CBrowserPane());
                 int i = TabList.getInstancia().getTabID();
-                tabPane.setTabComponentAt(tabPane.getTabCount()-1, new CTab(tabPane, i, ""));               
+                tabPane.setTabComponentAt(tabPane.getTabCount()-1, new CTab(tabPane, i, "")); 
                 TabList.getInstancia().add(new CTab(tabPane, i, ""));
                 tabPane.setSelectedIndex(tabPane.getTabCount()-1);
                 pressed = false;
