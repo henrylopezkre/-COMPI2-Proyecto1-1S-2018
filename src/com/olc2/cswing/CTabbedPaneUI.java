@@ -5,41 +5,17 @@
  */
 package com.olc2.cswing;
 
-import com.alee.extended.layout.VerticalFlowLayout;
-import com.alee.extended.transition.ComponentTransition;
-import com.alee.extended.transition.effects.slide.SlideTransitionEffect;
-import com.alee.extended.window.WebPopOver;
-import com.alee.laf.label.WebLabel;
-import com.alee.laf.panel.WebPanel;
 import com.alee.laf.tabbedpane.WebTabbedPane;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
-import javax.swing.plaf.metal.MetalTabbedPaneUI;
 import com.alee.laf.tabbedpane.WebTabbedPaneUI;
-import com.alee.managers.language.data.TooltipWay;
-import com.alee.managers.tooltip.TooltipManager;
-import com.alee.extended.transition.effects.Direction;
-import com.alee.extended.transition.effects.curtain.CurtainTransitionEffect;
-import com.alee.extended.transition.effects.curtain.CurtainType;
-import com.alee.laf.button.WebButton;
-import com.alee.utils.SwingUtils;
-import java.awt.Insets;
-import java.awt.Point;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 import com.olc2.model.TabList;
 
 /**

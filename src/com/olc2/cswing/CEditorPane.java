@@ -17,6 +17,8 @@ import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.IOException;
+import java.net.URL;
 import javax.swing.JEditorPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
@@ -42,7 +44,7 @@ public class CEditorPane extends WebEditorPane implements
     private Color color;
     private Rectangle lastView;
     public CEditorPane(){
-        super();
+        //super();
         this.color = new Color(233, 239, 248);
         this.setSelectionColor(new Color(176, 197, 227));
         this.setEditorKit(new CEditorKit());
@@ -109,7 +111,7 @@ public class CEditorPane extends WebEditorPane implements
                     int offset = CEditorPane.this.getCaretPosition();
                     Rectangle currentView = CEditorPane.this.modelToView(offset);
                     //  Remove the highlighting from the previously highlighted line
-                    if (lastView.y != currentView.y){
+                    if (lastView != null && lastView.y != currentView.y){
                         CEditorPane.this.repaint(0, lastView.y, CEditorPane.this.getWidth(), lastView.height);
                         lastView = currentView;
                     }

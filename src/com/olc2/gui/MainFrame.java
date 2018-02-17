@@ -62,7 +62,7 @@ public class MainFrame extends WebFrame {
         //this.setTopBg(new Color(38, 39, 43));
         //this.setWindowOpacity(0.99f);
         //
-         tabbedPaneBrowser.setUI(new CTabbedPaneUI());
+        tabbedPaneBrowser.setUI(new CTabbedPaneUI());
         tabbedPaneBrowser.addChangeListener(tabPaneBrowserChangeListener);
         tabbedPaneBrowser.addTab("", new CBrowserPane());
         tabbedPaneBrowser.addTab("", new CBrowserPane());
