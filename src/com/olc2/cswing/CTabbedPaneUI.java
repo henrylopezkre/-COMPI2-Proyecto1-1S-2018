@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 import com.alee.laf.tabbedpane.WebTabbedPaneUI;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import com.olc2.model.TabList;
+import com.olc2.list.TabList;
 
 /**
  *

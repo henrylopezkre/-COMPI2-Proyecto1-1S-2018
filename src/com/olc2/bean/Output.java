@@ -5,19 +5,13 @@
  */
 package com.olc2.bean;
 
-import java.util.Enumeration;
-
 /**
  *
  * @author henry
  */
-public class Error {
-    private String fileName, description;
+public class Output {
+    private String fileName, text;
     private int row, column;
-    public enum Type{
-        Léxico, Sintáctico, Semántico
-    };
-    private Type type;
 
     public String getFileName() {
         return fileName;
@@ -43,31 +37,20 @@ public class Error {
         this.column = column;
     }
     
-    public Type getType() {
-        return type;
+    public String getText() {
+        return text;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
-    public Error(String fileName, int row, int column, Type type, String description) {
+    public Output(String fileName, int row, int column, String text) {
         this.fileName = fileName;
         this.row = row;
         this.column = column;
-        this.type = type;
-        this.description = description;
+        this.text = text;
     }
     
-    public Error(){
     
-    }
 }

@@ -30,6 +30,13 @@ import com.alee.laf.toolbar.WebToolBar;
 import com.alee.utils.FileUtils;
 import com.alee.utils.file.FileComparator;
 import com.alee.utils.swing.Customizer;
+import com.olc2.bean.Error;
+import com.olc2.bean.Error.Type;
+import com.olc2.bean.Output;
+import com.olc2.list.ErrorList;
+import com.olc2.list.OutputList;
+import com.olc2.model.ErrorTableModel;
+import com.olc2.model.OutputTableModel;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
@@ -54,6 +61,7 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
@@ -78,6 +86,7 @@ public class CBrowserPane extends WebPanel {
     private Color colorForeOptions, colorBackOptions;
     private WebSplitPane splitPaneDocs;
     private WebTable tableOutput, tableErrors;
+    private WebPanel panelOptionContainer;
     public CBrowserPane(){       
         this.colorForeOptions = new Color(255, 255, 255);
         this.colorBackOptions = new Color(44,124,203);
@@ -87,6 +96,9 @@ public class CBrowserPane extends WebPanel {
         this.toolBarOptions = new WebToolBar();
         this.toolBarBrowser.setRollover(true);
         this.scrollPanePage = new WebScrollPane(this.editorPanePage);
+        this.scrollPanePage.setBorder(BorderFactory.createEmptyBorder());
+        this.scrollPaneConsole = new WebScrollPane(null);
+        this.scrollPaneConsole.setBorder(BorderFactory.createEmptyBorder());
         this.setBackground(new Color(255, 255, 255));
         
         //ToolBar Browser
@@ -184,7 +196,7 @@ public class CBrowserPane extends WebPanel {
         linkLabelFav.setForeground(new Color(206, 206, 206));
         linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
-        toolBarFavs.add(linkLabelFav);
+        //toolBarFavs.add(linkLabelFav);
         
         //Button Fav
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
@@ -198,6 +210,15 @@ public class CBrowserPane extends WebPanel {
         buttonFav.setRolloverDecoratedOnly(true);
         buttonFav.setDrawFocus(false);
         toolBarFavs.add(buttonFav);
+        toolBarFavs.add(new WebButton("2").setMinimumWidth(150));
+        toolBarFavs.add(new WebButton("3"));
+        toolBarFavs.add(new WebButton("4"));
+        toolBarFavs.add(new WebButton("5"));
+        toolBarFavs.add(new WebButton("6"));
+        toolBarFavs.add(new WebButton("7"));
+        toolBarFavs.add(new WebButton("8"));
+        toolBarFavs.add(new WebButton("9"));
+        toolBarFavs.add(new WebButton("10"));
         
         //ToolBar Options
         toolBarOptions.setShadeWidth(5);
@@ -259,23 +280,39 @@ public class CBrowserPane extends WebPanel {
         //DocumentPane Docs
         this.documentPaneDocs = new WebDocumentPane();
         
+        //Table Errors
+        this.tableErrors = new WebTable();
+        this.tableErrors.setSelectionBackground(new Color(176, 197, 227));
+        this.tableErrors.setSelectionForeground(new Color(0,0,0));
+        
+        //Table Output
+        this.tableOutput = new WebTable();
+        this.tableOutput.setSelectionBackground(new Color(176, 197, 227));
+        this.tableOutput.setSelectionForeground(new Color(0,0,0));
+        
         //FileList Docs
         this.fileListDocs = new WebFileList ();
         
         //ScrollPane ListDocs
         this.scrollPaneListDocs = new WebScrollPane(fileListDocs);
+        this.scrollPaneListDocs.setBorder(BorderFactory.createEmptyBorder());
         
         this.splitPaneDocs = new WebSplitPane (WebSplitPane.HORIZONTAL_SPLIT, 
                 this.scrollPaneListDocs, this.documentPaneDocs);
         this.splitPaneDocs.setOneTouchExpandable(false);
         this.splitPaneDocs.setPreferredSize(new Dimension(250, 200));
-        this.splitPaneDocs.setDividerBorderColor(this.colorBackOptions);
+        this.splitPaneDocs.setDrawDividerBorder(true);
+        this.splitPaneDocs.setDividerBorderColor(new Color(189, 195, 199));
         this.splitPaneDocs.setResizeWeight(0.0);
         this.splitPaneDocs.setDividerLocation(200);
-        this.splitPaneDocs.setDividerSize(3);
+        this.splitPaneDocs.setDividerSize(8);
         this.splitPaneDocs.setContinuousLayout(true);   
         
-        this.panelOptions.setContent(splitPaneDocs);
+        this.panelOptionContainer = new WebPanel();
+        this.panelOptionContainer.setPreferredSize(new Dimension(250, 200));
+        this.panelOptionContainer.add(this.splitPaneDocs);
+        
+        this.panelOptions.setContent(panelOptionContainer);
                        
         //Panel Browser Layout
         GroupLayout panelBrowserLayout = new GroupLayout(this);
@@ -354,20 +391,34 @@ public class CBrowserPane extends WebPanel {
     };
     private void changeView(String name){
         if(name.startsWith("C")){
-            if(panelOptions.getContent() == splitPaneDocs){
-                panelOptions.setContent(splitPaneDocs);
-            } 
+            this.panelOptionContainer.remove(this.scrollPaneConsole);
+            this.panelOptionContainer.add(this.splitPaneDocs);
         }else{
-            panelOptions.setContent(new WebPanel());
+            if(name.equals("Salida")){
+                OutputList o = new OutputList();
+                o.add(new Output("Archivo", 1, 6, "Alguna línea"));
+                this.tableOutput.setModel(new OutputTableModel(o));
+                this.tableOutput.setPreferredScrollableViewportSize(new Dimension(200, 200));
+            }else{
+                ErrorList e = new ErrorList();
+                e.add(new Error("Archivo", 1, 6, Type.Semántico, "Algun error"));
+                this.tableErrors.setModel(new ErrorTableModel(e));
+                this.tableErrors.setPreferredScrollableViewportSize(new Dimension(200, 200));
+            }
+            this.scrollPaneConsole.setViewportView(name.equals("Salida") ? this.tableOutput : this.tableErrors);
+            this.panelOptionContainer.remove(this.splitPaneDocs);
+            this.panelOptionContainer.add(this.scrollPaneConsole);
         }
+        this.panelOptionContainer.updateUI();
     }
     private void loadListDocs(String path, String ext){
         SwingUtilities.invokeLater(new Runnable(){
             @Override
             public void run() {
                 //FileList Docs
+                fileListDocs.setSelectionBackground(new Color(176, 197, 227));
                 fileListDocs.setFileListViewType(FileListViewType.icons);
-                fileListDocs.setPreferredColumnCount(1);
+                fileListDocs.setPreferredColumnCount(2);
                 fileListDocs.setPreferredRowCount(10);
                 fileListDocs.setDisplayedDirectory(new File(path));
                 fileListDocs.setMultiplySelectionAllowed(false);
@@ -397,6 +448,7 @@ public class CBrowserPane extends WebPanel {
                 if(!fileListDocs.getFileListModel().isEmpty()){
                     if(!documentPaneDocs.isDocumentOpened(fileListDocs.getSelectedFile().getName())){
                         editorPaneDocs = new CEditorPane();
+                        editorPaneDocs.setEditable(false);
                         scrollPaneDocs = new WebScrollPane(editorPaneDocs);
                         try {
                             editorPaneDocs.getEditorKit().read(new FileReader(fileListDocs.getSelectedFile().getPath()),
@@ -404,8 +456,9 @@ public class CBrowserPane extends WebPanel {
                         } catch (IOException | BadLocationException ex) {
                             Logger.getLogger(CBrowserPane.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        documentPaneDocs.openDocument(new DocumentData(fileListDocs.getSelectedFile().getName(), 
-                                null, fileListDocs.getSelectedFile().getName(), getParent().getBackground(), scrollPaneDocs));
+                        String fileName = fileListDocs.getSelectedFile().getName();
+                        documentPaneDocs.openDocument(new DocumentData(fileName, 
+                                getIconDocs(fileName), fileName, getParent().getBackground(), scrollPaneDocs));
                     }else{
                         documentPaneDocs.setSelected(fileListDocs.getSelectedFile().getName());
                     }
@@ -413,4 +466,15 @@ public class CBrowserPane extends WebPanel {
             }
         });
     };
+    private ImageIcon getIconDocs(String fileName){
+        String icon = "";
+        if(fileName.endsWith("html")){
+            icon = "ic_html_20px.png";
+        }else if(fileName.endsWith("js")){
+            icon = "ic_js_20px.png";
+        }else{
+            icon = "ic_css_20px.png";
+        }
+        return new ImageIcon(getClass().getResource("/com/olc2/resources/" + icon));
+    }
 }

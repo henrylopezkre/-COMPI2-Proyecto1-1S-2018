@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicButtonUI;
-import com.olc2.model.TabList;
+import com.olc2.list.TabList;
 import java.awt.Color;
 
 /**

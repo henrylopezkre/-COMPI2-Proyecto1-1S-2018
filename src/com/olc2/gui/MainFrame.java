@@ -19,7 +19,7 @@ import com.alee.laf.tabbedpane.WebTabbedPane;
 import com.olc2.cswing.CBrowserPane;
 import com.olc2.cswing.CTab;
 import com.olc2.cswing.CTabbedPaneUI;
-import com.olc2.model.TabList;
+import com.olc2.list.TabList;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;

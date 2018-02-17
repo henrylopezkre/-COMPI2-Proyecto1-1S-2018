@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.olc2.model;
+package com.olc2.list;
 
 import com.olc2.cswing.CTab;
 import java.util.ArrayList;
