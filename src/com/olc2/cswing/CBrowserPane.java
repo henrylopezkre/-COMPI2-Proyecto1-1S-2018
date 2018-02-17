@@ -18,6 +18,7 @@ import com.alee.extended.tab.DocumentData;
 import com.alee.extended.tab.PaneData;
 import com.alee.extended.tab.TabTitleComponentProvider;
 import com.alee.extended.tab.WebDocumentPane;
+import com.alee.global.StyleConstants;
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.panel.WebPanel;
@@ -184,8 +185,8 @@ public class CBrowserPane extends WebPanel {
         toolBarFavs.setFloatable(false);
         toolBarFavs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         toolBarFavs.setToolbarStyle(ToolbarStyle.attached);
-        toolBarFavs.setLayout(new BoxLayout(toolBarFavs, BoxLayout.LINE_AXIS));
-        toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
+        //toolBarFavs.setLayout(new BoxLayout(toolBarFavs, BoxLayout.LINE_AXIS));
+        //toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
         
         //Fav
         WebLinkLabel linkLabelFav = new WebLinkLabel();
@@ -209,16 +210,18 @@ public class CBrowserPane extends WebPanel {
         buttonFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
         buttonFav.setRolloverDecoratedOnly(true);
         buttonFav.setDrawFocus(false);
-        toolBarFavs.add(buttonFav);
-        toolBarFavs.add(new WebButton("2").setMinimumWidth(150));
-        toolBarFavs.add(new WebButton("3"));
-        toolBarFavs.add(new WebButton("4"));
-        toolBarFavs.add(new WebButton("5"));
-        toolBarFavs.add(new WebButton("6"));
-        toolBarFavs.add(new WebButton("7"));
-        toolBarFavs.add(new WebButton("8"));
-        toolBarFavs.add(new WebButton("9"));
-        toolBarFavs.add(new WebButton("10"));
+        
+        WebButton buttonFavList = new WebButton();
+        buttonFavList.setIconTextGap(5);
+        buttonFavList.setMargin(new Insets(0,0,0,0));
+        buttonFavList.setMaximumSize(new Dimension(25,25));
+        buttonFavList.setMoveIconOnPress(false);
+        buttonFavList.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_20px.png")));
+        buttonFavList.setRolloverDecoratedOnly(true);
+        buttonFavList.setDrawFocus(false);
+        
+        //toolBarFavs.add(buttonFav);
+        toolBarFavs.addToEnd(WebButton.createIconWebButton(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_16px.png")), StyleConstants.mediumRound, true));
         
         //ToolBar Options
         toolBarOptions.setShadeWidth(5);
