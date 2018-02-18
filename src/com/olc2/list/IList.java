@@ -10,7 +10,7 @@ package com.olc2.list;
  * @author henry
  * @param <Object>
  */
-public interface CList<Object> {
+public interface IList<Object> {
     public void add(Object object);
     public void remove(int index);
     public Object get(int index);

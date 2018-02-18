@@ -88,8 +88,11 @@ public class CBrowserPane extends WebPanel {
     private WebTable tableOutput, tableErrors;
     private WebPanel panelOptionContainer;
     private WebToggleButton buttonFav, buttonSettings;
+    private WebButton buttonNewFav, buttonFavList;
     private WebList listFavs;
     private WebPopOver popOverFav;
+    private WebTextField textFieldURL;
+    private WebLabel labelFav;
     public CBrowserPane(){       
         this.colorForeOptions = new Color(255, 255, 255);
         this.colorBackOptions = new Color(44,124,203);
@@ -141,7 +144,7 @@ public class CBrowserPane extends WebPanel {
         
         //TextField Address
         toolBarBrowser.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebTextField textFieldURL = new WebTextField();
+        textFieldURL = new WebTextField();
         textFieldURL.setLeadingComponent(new WebImage(getClass().getResource("/com/olc2/resources/ic_search_18px.png")));
         //textFieldURL.setBackground(new Color(45, 45, 45));
         //textFieldURL.setForeground(new Color(206, 206, 206));
@@ -250,77 +253,24 @@ public class CBrowserPane extends WebPanel {
         linkLabelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_settings_20px.png")));
         toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
         toolBarFavs.add(linkLabelFav);*/
-        
-        //Button Fav
-        //toolBarFavs.add(Box.createRigidArea(new Dimension(5, 0)));
-        WebButton buttonNewFav = new WebButton();
-        buttonNewFav.setIconTextGap(5);
-        buttonNewFav.setMargin(new Insets(0,0,0,0));
-        buttonNewFav.setPreferredSize(new Dimension(150,25));
-        buttonNewFav.setMoveIconOnPress(false);
-        buttonNewFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_refresh_20px.png")));
-        buttonNewFav.setText("Esto es una prueba de sacpeasdfasfdjjjjjjjjjjjjjjjjjjjjjjjjjjj");       
-        buttonNewFav.setRolloverDecoratedOnly(true);
-        buttonNewFav.setDrawFocus(false);
-        
-        
-        //Button FavList
-        WebButton buttonFavList = new WebButton();
-        buttonFavList.setIconTextGap(5);
-        buttonFavList.setMargin(new Insets(0,0,0,0));
-        buttonFavList.setMaximumSize(new Dimension(16,16));
-        buttonFavList.setMoveIconOnPress(false);
-        buttonFavList.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_16px.png")));
-        buttonFavList.setRolloverDecoratedOnly(true);
-        buttonFavList.setDrawFocus(false);
-        
-        //Label Fav
-        WebLabel labelFav = new WebLabel();
-        labelFav.setIconTextGap(2);
-        labelFav.setMargin(new Insets(0,5,0,2));
-        labelFav.setMaximumSize(new Dimension(16,16));
-        labelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_fav_folder_18px.png")));
-        labelFav.setFontSizeAndStyle(11, Font.BOLD);
-        labelFav.setText("Favoritos");
-
-        FavList f = new FavList();
-        f.add(new Fav("ic_favlist_16px.png", "Item 1", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 2", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 3", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 4", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 5", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 6", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 7", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 8", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 9", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 10", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 11", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 12", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 13", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 14", "C:/Holaputomundo.html"));
-        f.add(new Fav("ic_favlist_16px.png", "Item 15", "C:/Holaputomundo.html"));
-        
-        //List Favs
-        listFavs = new WebList(new FavListModel(f));
-        listFavs.setCellRenderer(listCellRendererFavs);
-        listFavs.setMultiplySelectionAllowed(false);
-        listFavs.setVisibleRowCount(10);
-        listFavs.addMouseListener(listFavsMouseListener);
-        
-        //ScrollPane ListFavs
-        scrollPaneListFavs = new WebScrollPane(listFavs);
-        scrollPaneListFavs.setBorder(BorderFactory.createEmptyBorder());
-        
-        //ButtonPopup FavList
-        buttonPopupListFavs = new WebButtonPopup(buttonFavList, PopupWay.downLeft);
-        buttonPopupListFavs.setContent(scrollPaneListFavs);
-                
-        //toolBarFavs.add(buttonFav);
-        toolBarFavs.add(labelFav);
-        toolBarFavs.addSeparator();
-        toolBarFavs.add(buttonNewFav);
-        toolBarFavs.addToEnd(buttonFavList);
-        
+                     
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 1", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 2", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 3", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 4", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 5", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 6", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 7", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 8", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 9", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 10", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 11", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 12", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 13", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 14", "C:/Holaputomundo.html"));
+        FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 15", "C:/Holaputomundo.html"));
+       
+                        
         //ToolBar Options
         toolBarOptions.setShadeWidth(5);
         toolBarOptions.setMargin(0, 0, 0, 0);
@@ -435,7 +385,10 @@ public class CBrowserPane extends WebPanel {
                 .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(panelOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-        );       
+        );
+        
+        this.loadFavorites();
+        
     }
     private ActionListener buttonFavActionListener = new ActionListener(){
         @Override
@@ -621,4 +574,83 @@ public class CBrowserPane extends WebPanel {
             popOverFav.dispose();
         }
     };
+    
+    private void loadFavorites(){
+        SwingUtilities.invokeLater(new Runnable(){
+            @Override
+            public void run() {
+                toolBarFavs.removeAll();
+                //Label Fav
+                labelFav = new WebLabel();
+                labelFav.setIconTextGap(2);
+                labelFav.setMargin(new Insets(0,5,0,2));
+                labelFav.setMaximumSize(new Dimension(16,16));
+                labelFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_fav_folder_18px.png")));
+                labelFav.setFontSizeAndStyle(11, Font.BOLD);
+                labelFav.setText("Favoritos");
+                
+                //Button FavList
+                buttonFavList = new WebButton();
+                buttonFavList.setIconTextGap(5);
+                buttonFavList.setMargin(new Insets(0,0,0,0));
+                buttonFavList.setMaximumSize(new Dimension(16,16));
+                buttonFavList.setMoveIconOnPress(false);
+                buttonFavList.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/ic_favlist_16px.png")));
+                buttonFavList.setRolloverDecoratedOnly(true);
+                buttonFavList.setDrawFocus(false);
+                buttonFavList.setVisible(false);
+                
+                toolBarFavs.add(labelFav);
+                toolBarFavs.addSeparator();
+                toolBarFavs.addToEnd(buttonFavList);
+                
+                Fav fav = null;
+                for(int i = 0; i < FavList.getInstancia().size(); i++){
+                    if(i < 10){
+                        fav = FavList.getInstancia().get(i);
+                        addToFavorites(fav.getIcon(), fav.getName(), fav.getPathFile());
+                    }           
+                }
+                if(FavList.getInstancia().size() > 10){
+                    //List Favs
+                    listFavs = new WebList(new FavListModel());
+                    listFavs.setCellRenderer(listCellRendererFavs);
+                    listFavs.setMultiplySelectionAllowed(false);
+                    listFavs.setVisibleRowCount(10);
+                    listFavs.addMouseListener(listFavsMouseListener);
+                    buttonFavList.setVisible(true);
+                }
+                
+                //ScrollPane ListFavs
+                scrollPaneListFavs = new WebScrollPane(listFavs);
+                scrollPaneListFavs.setBorder(BorderFactory.createEmptyBorder());
+
+                //ButtonPopup FavList
+                buttonPopupListFavs = new WebButtonPopup(buttonFavList, PopupWay.downLeft);
+                buttonPopupListFavs.setContent(scrollPaneListFavs);
+                
+                toolBarFavs.revalidate();
+                toolBarFavs.updateUI();
+            }
+        });
+    }
+    
+    private void addToFavorites(String icon, String name, String pathFile){
+        buttonNewFav = new WebButton();
+        buttonNewFav.setIconTextGap(5);
+        buttonNewFav.setMargin(new Insets(0,0,0,0));
+        buttonNewFav.setPreferredSize(new Dimension(121,25));
+        buttonNewFav.setMoveIconOnPress(false);
+        buttonNewFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/" + icon)));
+        buttonNewFav.setText(name);       
+        buttonNewFav.setRolloverDecoratedOnly(true);
+        buttonNewFav.setDrawFocus(false);
+        buttonNewFav.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                textFieldURL.setText(pathFile);
+            }
+        });
+        toolBarFavs.add(buttonNewFav);
+    }
 }

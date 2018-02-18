@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class FavList implements CList<Fav> {
+public class FavList implements IList<Fav> {
     private List<Fav> favList;
     private static FavList instancia;
     public static synchronized FavList getInstancia(){

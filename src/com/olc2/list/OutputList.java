@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class OutputList implements CList<Output>{
+public class OutputList implements IList<Output>{
     private List<Output> outputList;
     private static OutputList instancia;
     public static synchronized OutputList getInstancia(){

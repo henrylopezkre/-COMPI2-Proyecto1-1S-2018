@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author henry
  */
-public class ErrorList implements CList<Error> {
+public class ErrorList implements IList<Error> {
     private List<Error> errorList;
     private static ErrorList instancia;
     public static synchronized ErrorList getInstancia(){

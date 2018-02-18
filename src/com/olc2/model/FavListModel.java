@@ -17,19 +17,22 @@ import javax.swing.ImageIcon;
  * @author henry
  */
 public class FavListModel extends AbstractListModel {
-    private FavList favList;
-    public FavListModel(FavList favList){
-        this.favList = favList;
+    public FavListModel(){
     }
     @Override
     public int getSize() {
-        return this.favList.size();
+        return FavList.getInstancia().size();
     }
 
     @Override
     public Object getElementAt(int index) {
-        Fav fav = this.favList.get(index);
-        return new WebButton(fav.getName(), new ImageIcon(getClass().getResource("/com/olc2/resources/" + fav.getIcon())));
+        index = index + 10;
+        if(getSize()>9 && index < getSize()){
+            
+            Fav fav = FavList.getInstancia().get(index);
+            return new WebButton(fav.getName(), new ImageIcon(getClass().getResource("/com/olc2/resources/" + fav.getIcon())));
+        }
+        return null;
     }
     
 }
