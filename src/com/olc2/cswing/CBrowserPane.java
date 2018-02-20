@@ -21,15 +21,24 @@ import com.alee.laf.label.WebLabel;
 import com.alee.laf.list.WebList;
 import com.alee.laf.panel.WebPanel;
 import com.alee.extended.panel.TwoSidesPanel;
+import com.alee.extended.transition.ComponentTransition;
+import com.alee.extended.transition.TransitionListener;
+import com.alee.extended.transition.effects.Direction;
+import com.alee.extended.transition.effects.slide.SlideTransitionEffect;
+import com.alee.extended.transition.effects.slide.SlideType;
 import com.alee.extended.window.PopOverDirection;
+import com.alee.laf.rootpane.WebFrame;
 import com.alee.laf.scroll.WebScrollPane;
+import com.alee.laf.separator.WebSeparator;
 import com.alee.laf.splitpane.WebSplitPane;
 import com.alee.laf.table.WebTable;
 import com.alee.laf.text.WebTextField;
 import com.alee.laf.toolbar.ToolbarStyle;
 import com.alee.laf.toolbar.WebToolBar;
+import com.alee.managers.language.data.TooltipWay;
 import com.alee.managers.popup.PopupWay;
 import com.alee.managers.popup.WebButtonPopup;
+import com.alee.utils.CollectionUtils;
 import com.olc2.bean.Error;
 import com.olc2.bean.Error.Type;
 import com.olc2.bean.Fav;
@@ -70,7 +79,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
-
+import java.util.List;
 /**
  *
  * @author henry
@@ -93,7 +102,10 @@ public class CBrowserPane extends WebPanel {
     private WebPopOver popOverFav;
     private WebTextField textFieldURL;
     private WebLabel labelFav;
-    public CBrowserPane(){       
+    private List<WebButton> favs;
+    private Component parent;
+    public CBrowserPane(Component parent){  
+        this.parent = parent;
         this.colorForeOptions = new Color(255, 255, 255);
         this.colorBackOptions = new Color(44,124,203);
         this.editorPanePage = new CEditorPane();
@@ -196,7 +208,6 @@ public class CBrowserPane extends WebPanel {
         textFieldFavURL.setPreferredSize(new Dimension(200, 30));
         textFieldFavURL.setEditable(false);
         
-        
         //Button SaveFav
         WebButton buttonSaveFav = new WebButton();
         buttonSaveFav.setPreferredSize(75, 30);
@@ -238,11 +249,42 @@ public class CBrowserPane extends WebPanel {
         popOverFav.add(new SingleAlignPanel(buttonGroupFav, SingleAlignPanel.RIGHT).setMargin(5));
         
         //ToolBar Favs
+        toolBarFavs.setTopBgColor(new Color(255, 255, 255));
+        toolBarFavs.setBottomBgColor(new Color(255, 255, 255));
         toolBarFavs.setShadeWidth(5);
         toolBarFavs.setMargin(2, 0, 2, 0);
         toolBarFavs.setFloatable(false);
         toolBarFavs.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         toolBarFavs.setToolbarStyle(ToolbarStyle.attached);
+        
+        //Button LeftFav
+        WebButton buttonLeftFav = new WebButton();
+        buttonLeftFav.addActionListener(buttonLeftFavActionListener);
+        buttonLeftFav.setPreferredSize(30, 25);
+        buttonLeftFav.setBottomBgColor(new Color(46, 134, 193));
+        buttonLeftFav.setTopBgColor(new Color(46, 134, 193));
+        buttonLeftFav.setBottomSelectedBgColor(new Color(46, 134, 193));
+        buttonLeftFav.setTopSelectedBgColor(new Color(46, 134, 193));
+        buttonLeftFav.setForeground(new Color(255, 255, 255));
+        buttonLeftFav.setSelectedForeground(new Color(255, 255, 255));
+        buttonLeftFav.setText("<");
+        buttonLeftFav.setDrawFocus(false);
+        
+        //Button RightFav
+        WebButton buttonRightFav = new WebButton();
+        buttonRightFav.addActionListener(buttonRightFavActionListener);
+        buttonRightFav.setPreferredSize(30, 25);
+        buttonRightFav.setText(">");
+        buttonRightFav.setDrawFocus(false);
+        
+        //ButtonGroup Options
+        WebButtonGroup buttonGroupSlide = new WebButtonGroup(true, buttonLeftFav, buttonRightFav);
+        //buttonGroupFav.setButtonsDrawSides(false, false, false, false);
+        buttonGroupSlide.setButtonsMargin(2);
+        buttonGroupSlide.setOrientation(SwingConstants.HORIZONTAL);
+        
+        toolBarFavs.addSeparatorToEnd();
+        toolBarFavs.addToEnd(buttonGroupSlide);
         
         //Fav
         /*WebLinkLabel linkLabelFav = new WebLinkLabel();
@@ -269,8 +311,7 @@ public class CBrowserPane extends WebPanel {
         FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 13", "C:/Holaputomundo.html"));
         FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 14", "C:/Holaputomundo.html"));
         FavList.getInstancia().add(new Fav("ic_favlist_16px.png", "Item 15", "C:/Holaputomundo.html"));
-       
-                        
+                   
         //ToolBar Options
         toolBarOptions.setShadeWidth(5);
         toolBarOptions.setMargin(0, 0, 0, 0);
@@ -370,10 +411,10 @@ public class CBrowserPane extends WebPanel {
         this.setLayout(panelBrowserLayout);
         panelBrowserLayout.setHorizontalGroup(
             panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(toolBarBrowser, GroupLayout.DEFAULT_SIZE, 540, Toolkit.getDefaultToolkit().getScreenSize().width-5)
-            .addComponent(toolBarFavs, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
-            .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
-            .addComponent(panelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Toolkit.getDefaultToolkit().getScreenSize().width-5)
+            .addComponent(toolBarBrowser, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, parent.getPreferredSize().width, parent.getPreferredSize().width)
+            .addComponent(toolBarFavs, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrollPanePage, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panelOptions, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelBrowserLayout.setVerticalGroup(
             panelBrowserLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -387,9 +428,105 @@ public class CBrowserPane extends WebPanel {
                 .addComponent(panelOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
         );
         
-        this.loadFavorites();
+        favs = CollectionUtils.copy 
+            (createFavorite("ic_fav_pressed_20px.png", "Favorito1", "C://La concha de tu madre.html"), 
+             createFavorite("ic_fav_pressed_20px.png", "Favorito2", "C://HOOOOOOOOOOOOOOOOOOO.html"), 
+             createFavorite("ic_fav_pressed_20px.png", "Favorito3", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito4", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito5", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito6", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito7", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito8", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito9", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito10", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito11", "C://JAJSDLFJSADLKFJASLDFJ.html"),
+             createFavorite("ic_fav_pressed_20px.png", "Favorito12", "C://JAJSDLFJSADLKFJASLDFJ.html"));
+        
+        boolean first = true;
+        for (WebButton fav : favs){
+            final ComponentTransition transition = new ComponentTransition(fav, createEffect () );
+            toolBarFavs.add(transition);
+            if(first){
+                first = false;
+                transition.addTransitionListener(new TransitionListener(){
+                    @Override
+                    public void transitionStarted(){
+                        buttonBack.setEnabled(false);
+                        buttonNext.setEnabled(false);
+                    }
+
+                    @Override
+                    public void transitionFinished(){
+                        buttonBack.setEnabled(true);
+                        buttonNext.setEnabled(true);
+                    }
+                });
+            }
+        }
+        
+        //this.loadFavorites();
         
     }
+    
+    private ActionListener buttonLeftFavActionListener = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e){
+            WebButton first = favs.remove(0);
+            favs.add(first);
+            performTransitions(toolBarFavs, favs, Direction.left);
+        };
+    };
+    
+    private ActionListener buttonRightFavActionListener = new ActionListener(){
+        @Override
+        public void actionPerformed(ActionEvent e){
+            WebButton last = favs.remove(favs.size()-1);
+            favs.add(0, last);
+            performTransitions(toolBarFavs, favs, Direction.right);
+        };
+    };
+    
+    public void performTransitions(WebToolBar toolBar, List<WebButton> favs, Direction direction ){
+        for(int i = 2; i < toolBar.getComponentCount(); i++){
+            if(toolBar.getComponent(i) instanceof ComponentTransition){
+                ComponentTransition componentTransition = (ComponentTransition)toolBar.getComponent(i);
+                componentTransition.setBackground(new Color(255, 255, 255));
+                (( SlideTransitionEffect)componentTransition.getTransitionEffect()).setDirection(direction);
+                componentTransition.performTransition(favs.get(i-2));
+            }
+        }
+    }
+    
+    public SlideTransitionEffect createEffect(){
+        SlideTransitionEffect effect = new SlideTransitionEffect ();
+        effect.setType(SlideType.moveBoth);
+        effect.setSpeed(15);
+        return effect;
+    }
+    
+    private WebButton createFavorite(String icon, String name, String pathFile){
+        buttonNewFav = new WebButton();
+        buttonNewFav.setIconTextGap(5);
+        buttonNewFav.setBackground(new Color(255, 255, 255));
+        buttonNewFav.setOpaque(true);
+        buttonNewFav.setHorizontalAlignment(SwingConstants.LEADING);
+        buttonNewFav.setMargin(new Insets(0,0,0,0));
+        buttonNewFav.setPreferredSize(new Dimension(104,25));
+        buttonNewFav.setMoveIconOnPress(false);
+        buttonNewFav.setIcon(new ImageIcon(getClass().getResource("/com/olc2/resources/" + icon)));
+        buttonNewFav.setText(name);       
+        buttonNewFav.setToolTip(buttonNewFav.getIcon(), pathFile, TooltipWay.down);
+        buttonNewFav.setRolloverDecoratedOnly(true);
+        buttonNewFav.setDrawFocus(false);
+        buttonNewFav.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e){
+                textFieldURL.setText(pathFile);
+            }
+        });
+        return buttonNewFav;
+    }
+    
     private ActionListener buttonFavActionListener = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
@@ -403,7 +540,6 @@ public class CBrowserPane extends WebPanel {
             //toolBarFavs.updateUI();
             //System.out.println(buttonFav.isSelected());
             popOverFav.show(buttonFav);
-            
         };
     };
     private MouseListener buttonSettingsMouseListener = new MouseAdapter(){

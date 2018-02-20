@@ -64,20 +64,21 @@ public class MainFrame extends WebFrame {
         //
         tabbedPaneBrowser.setUI(new CTabbedPaneUI());
         tabbedPaneBrowser.addChangeListener(tabPaneBrowserChangeListener);
-        tabbedPaneBrowser.addTab("", new CBrowserPane());
-        tabbedPaneBrowser.addTab("", new CBrowserPane());
-        int i = TabList.getInstancia().getTabID();
-        tabbedPaneBrowser.setTabComponentAt(0, new CTab(tabbedPaneBrowser, i, "Facebook"));
-        TabList.getInstancia().add(new CTab(tabbedPaneBrowser, i, "Facebook"));
-        i = TabList.getInstancia().getTabID();
-        tabbedPaneBrowser.setTabComponentAt(1, new CTab(tabbedPaneBrowser, i, ""));
         ((WebTabbedPane)tabbedPaneBrowser).setTabOverlay(1);
         ((WebTabbedPane)tabbedPaneBrowser).setTabStretchType(TabStretchType.never);
-        TabList.getInstancia().add(new CTab(tabbedPaneBrowser, i, ""));
         ((WebTabbedPane)tabbedPaneBrowser).setTabbedPaneStyle(TabbedPaneStyle.attached);
-        ((WebTabbedPane)tabbedPaneBrowser).setSelectedIndex(0);
+        createNewEmptyTab();
     }
 
+    private void createNewEmptyTab(){
+        WebTabbedPane tabbedPane = (WebTabbedPane)tabbedPaneBrowser;
+        tabbedPane.addTab("", new CBrowserPane(MainFrame.this));
+        int i = TabList.getInstancia().getTabID();
+        tabbedPane.setTabComponentAt(0, new CTab(tabbedPaneBrowser, i, ""));
+        TabList.getInstancia().add(new CTab(tabbedPaneBrowser, i, ""));
+        tabbedPane.setSelectedIndex(tabbedPane.getTabCount()-1);
+    }
+    
     private ChangeListener tabPaneBrowserChangeListener = new ChangeListener(){
         @Override
         public void stateChanged(ChangeEvent e){
